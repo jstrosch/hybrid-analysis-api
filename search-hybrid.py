@@ -56,7 +56,7 @@ def download_sample(download_url, headers, save_directory, sample_sha256):
 def main(argv):
 
     options, args = setup_args() 
-
+    parameters = {}
     headers = {
         "accept":"application/json",
         "Content-Type":"application/x-www-form-urlencoded",
@@ -68,18 +68,14 @@ def main(argv):
         filters = options.parameters.split(",")
         for filter in filters:
             key,value = filter.split(":")
-            headers[key] = value
-
-    parameters = {}
+            parameters[key] = value
 
     if options.query == "terms":
 
         headers["accept"] = "application/json"
 
-        parameters = {
-            "filetype":options.filetype,
-            "date_to":'{0:%Y-%m-%d %H:%M}'.format(datetime.datetime.now())
-        }
+        parameters["filetype"] = options.filetype 
+        parameters["date_to"] = '{0:%Y-%m-%d %H:%M}'.format(datetime.datetime.now())
 
         resp = requests.post(api_base_url + terms_url, data = parameters, headers = headers)
 
