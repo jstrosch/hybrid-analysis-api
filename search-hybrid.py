@@ -50,8 +50,7 @@ def download_sample(download_url, headers, save_directory, sample_sha256):
         os.makedirs(save_directory)
 
     with open(save_directory + "/" + sample_sha256 + ".gz", "wb") as file:
-        for chunk in download.iter_content(chunk_size=128):
-            file.write(download.content)
+        file.write(download.content)
 
 def main(argv):
 
