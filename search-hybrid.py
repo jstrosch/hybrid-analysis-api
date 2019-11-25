@@ -140,7 +140,7 @@ def main(argv):
 
             headers["Content-Type"] = "application/gzip"
 
-            if result["interesting"] == True:
+            if result["interesting"] == True and result["url_analysis"] == False and result["shared_analysis"] == True:
 
                 if options.verbose == "y":
                     print("[*] Downloading sample - " + str(result["sha256"]))
