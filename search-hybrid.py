@@ -44,6 +44,10 @@ def setup_args():
     action="store", dest="shuffle",
     help="Shuffle the list of returned results before downloading - values are y or n", default="n")
 
+    parser.add_option('-v', '--verbose',
+    action="store", dest="verbose",
+    help="Print results of key aspects of the script, such as total results found, number downloaded, et cetera", default="n") 
+
     return parser.parse_args()
 
 
@@ -86,7 +90,8 @@ def main(argv):
 
         results = json.loads(resp.text)
 
-        print("[*] Found " + str(results["count"]) + " results")
+        if options.verbose == "y":
+            print("[*] Found " + str(results["count"]) + " results")
 
         results = results["result"]
 
@@ -98,8 +103,8 @@ def main(argv):
             headers["Content-Type"] = "application/gzip"
 
             if result["verdict"] == "malicious":
-
-                print("[*] Downloading sample - " + str(result["sha256"]))
+                if options.verbose == "y":
+                    print("[*] Downloading sample - " + str(result["sha256"]))
 
                 download_sample(api_base_url + download_url + result["sha256"] + "/sample", 
                 headers, 
@@ -111,10 +116,9 @@ def main(argv):
                 time.sleep(throttle)
 
             if download_count >= int(options.limit):
-                print("[!] Download limit reached")
+                if options.verbose == "y":
+                    print("[!] Download limit reached")
                 break
-
-        print("[*] Downloaded " + str(download_count) + " samples")
 
     elif options.query == "feed":
 
@@ -124,7 +128,8 @@ def main(argv):
 
         results = json.loads(resp.text)
 
-        print("[*] Found " + str(results["count"]) + " results")
+        if options.verbose == "y":
+            print("[*] Found " + str(results["count"]) + " results")
 
         results = results["data"]
         
@@ -137,7 +142,8 @@ def main(argv):
 
             if result["interesting"] == True:
 
-                print("[*] Downloading sample - " + str(result["sha256"]))
+                if options.verbose == "y":
+                    print("[*] Downloading sample - " + str(result["sha256"]))
 
                 download_sample(api_base_url + download_url + result["sha256"] + "/sample", 
                 headers,
@@ -149,9 +155,11 @@ def main(argv):
                 time.sleep(throttle)
 
             if download_count >= int(options.limit):
-                print("[!] Download limit reached")
+                if options.verbose == "y":
+                    print("[!] Download limit reached")
                 break
 
+    if options.verbose == "y":
         print("[*] Downloaded " + str(download_count) + " samples")
 
 if __name__ == '__main__':
