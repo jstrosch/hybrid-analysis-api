@@ -4,7 +4,7 @@ __author__ = "Josh Stroschein"
 __version__ = "0.0.1"
 __maintainer__ = "Josh Stroschein"
 
-import sys, os, requests, optparse, datetime, json, time
+import sys, os, requests, optparse, datetime, json, time, random
 
 api_key = "<YOUR API KEY>"
 
@@ -40,6 +40,10 @@ def setup_args():
     action="store", dest="parameters",
     help="Search filters as defined by API docs, in the form of 'key:value,key:value'", default="") 
 
+    parser.add_option('-s', '--shuffle',
+    action="store", dest="shuffle",
+    help="Shuffle the list of returned results before downloading - values are y or n", default="n")
+
     return parser.parse_args()
 
 
@@ -69,6 +73,8 @@ def main(argv):
             key,value = filter.split(":")
             parameters[key] = value
 
+    download_count = 0
+
     if options.query == "terms":
 
         headers["accept"] = "application/json"
@@ -82,9 +88,12 @@ def main(argv):
 
         print("[*] Found " + str(results["count"]) + " results")
 
-        download_count = 0
+        results = results["result"]
 
-        for result in results["result"]:
+        if options.shuffle == "y":
+            random.shuffle(results)
+
+        for result in results:
 
             headers["Content-Type"] = "application/gzip"
 
@@ -117,9 +126,12 @@ def main(argv):
 
         print("[*] Found " + str(results["count"]) + " results")
 
-        download_count = 0
+        results = results["data"]
+        
+        if options.shuffle == "y":
+            random.shuffle(results)
 
-        for result in results["data"]:
+        for result in results:
 
             headers["Content-Type"] = "application/gzip"
 
