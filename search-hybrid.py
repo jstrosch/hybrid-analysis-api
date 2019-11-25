@@ -102,7 +102,7 @@ def main(argv):
 
             headers["Content-Type"] = "application/gzip"
 
-            if result["verdict"] == "malicious":
+            if result["verdict"] == "malicious" or result["verdict"] == "suspicious":
                 if options.verbose == "y":
                     print("[*] Downloading sample - " + str(result["sha256"]))
 
